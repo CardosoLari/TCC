@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>PitMate - Checklists</title>
+  <style>
+    body {
+      background-color: #f2f2f2;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .topbar {
+      background-color: #560216;
+      height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 20px;
+    }
+
+    .topbar .title {
+      color: white;
+      font-weight: bold;
+      font-size: 55px;
+    }
+
+    .topbar .image {
+      position: absolute;
+      left: 20px;
+    }
+
+    .topbar .image img {
+      height: 110px;
+    }
+
+    .topbar .profile {
+      position: absolute;
+      right: 20px;
+    }
+
+    .topbar .profile img {
+      height: 60px;
+      width: 60px;
+      border-radius: 50%;
+    }
+
+    .container {
+      padding: 30px;
+    }
+
+    h2 {
+      font-size: 28px;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .card {
+      background-color: white;
+      border-radius: 15px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .card:hover {
+        background-color:rgba(211, 47, 47, 0.5);
+    }
+
+    .card-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .icon-wrapper {
+      background-color: #eeeeee;
+      border-radius: 12px;
+      padding: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+    }
+
+    .icon-wrapper img {
+      width: 40px;
+      height: 40px;
+    }
+
+    .card-left .text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-left .text strong {
+      font-size: 23px;
+    }
+
+    .card-left .text span {
+      font-size: 19px;
+      color: #666;
+    }
+
+    .card-right {
+      font-size: 22px;
+      color: #560216;
+    }
+
+    .back-button {
+      position: absolute;
+      right: 30px;
+      top: 180px;
+      background: white;
+      border-radius: 50%;
+      padding: 10px;
+      border: 2px solid #560216;
+      color: #560216;
+      font-weight: bold;
+      font-size: 20px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="image">
+      <img src="{{ url_for('static', filename='icone.png') }}" alt="Ícone">
+    </div>
+    <div class="title">PitMate</div>
+   
+  </div>
+
+  <a href="{{ url_for('portifólio') }}" class="back-button">←</a>
+
+  <div class="container">
+    <h2>Checklists</h2>
+
+    <a href="{{ url_for('checklist_detalhado', titulo='Emergências') }}" style="text-decoration: none; color: inherit;">
+        <div class="card">
+          <div class="card-left">
+            <div class="icon-wrapper">
+              <img src="{{ url_for('static', filename='Emergencia].png') }}" alt="Emergências">
+            </div>
+            <div class="text">
+              <strong>Emergências</strong>
+              <span>{{ emergencias_count }} Itens</span>
+            </div>
+          </div>
+          <div class="card-right">&gt;</div>
+        </div>
+      </a>
+      
+      <a href="{{ url_for('checklist_detalhado', titulo='Viagens') }}" style="text-decoration: none; color: inherit;">
+        <div class="card">
+          <div class="card-left">
+            <div class="icon-wrapper">
+              <img src="{{ url_for('static', filename='Viagem.png') }}" alt="Viagens">
+            </div>
+            <div class="text">
+              <strong>Viagens</strong>
+              <span>{{ viagens_count }} Itens</span>
+            </div>
+          </div>
+          <div class="card-right">&gt;</div>
+        </div>
+      </a>
+      
+      <a href="{{ url_for('checklist_detalhado', titulo='Compra de veículos usados') }}" style="text-decoration: none; color: inherit;">
+        <div class="card">
+          <div class="card-left">
+            <div class="icon-wrapper">
+              <img src="{{ url_for('static', filename='CompraVeículo.png') }}" alt="Compra de veículos usados">
+            </div>
+            <div class="text">
+              <strong>Compra de veículos usados</strong>
+              <span>{{ usados_count }} Itens</span>
+            </div>
+          </div>
+          <div class="card-right">&gt;</div>
+        </div>
+      </a>
+      
+</body>
+</html>

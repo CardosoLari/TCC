@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>PitMate - {{ titulo }}</title>
+  <style>
+    body {
+      background-color: #f2f2f2;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .topbar {
+      background-color: #560216;
+      height: 150px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      padding: 0 20px;
+    }
+
+    .topbar .title {
+      color: white;
+      font-weight: bold;
+      font-size: 55px;
+    }
+
+    .topbar .image {
+      position: absolute;
+      left: 20px;
+    }
+
+    .topbar .image img {
+      height: 110px;
+    }
+
+    .topbar .profile {
+      position: absolute;
+      right: 20px;
+    }
+
+    .topbar .profile img {
+      height: 60px;
+      width: 60px;
+      border-radius: 50%;
+    }
+
+    .container {
+      padding: 30px;
+    }
+
+    h2 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h2 img {
+      width: 30px;
+      height: 30px;
+    }
+
+    .checklist-item {
+      background-color: white;
+      border-radius: 10px;
+      padding: 10px 15px;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 18px;
+      border-left: 4px solid #560216;
+    }
+
+    .checklist-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: #560216;
+    }
+
+    .back-button {
+      position: absolute;
+      right: 30px;
+      top: 180px;
+      background: white;
+      border-radius: 50%;
+      padding: 10px;
+      border: 2px solid #560216;
+      color: #560216;
+      font-weight: bold;
+      font-size: 20px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="image">
+      <img src="{{ url_for('static', filename='icone.png') }}" alt="Ícone">
+    </div>
+    <div class="title">PitMate</div>
+    
+  </div>
+
+  <a href="{{ url_for('checklist') }}" class="back-button">←</a>
+
+  <div class="container">
+    <h2>
+      <img src="{{ url_for('static', filename=icone) }}" alt="Icone"> 
+      {{ titulo }}
+    </h2>
+
+    {% for item in checklist %}
+    <div class="checklist-item">
+      <input type="checkbox" id="item{{ loop.index }}">
+      <label for="item{{ loop.index }}">{{ item }}</label>
+    </div>
+    {% endfor %}
+  </div>
+</body>
+</html>

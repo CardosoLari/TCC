@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>PitMate - Dicas</title>
+  <style>
+    body {
+      background-color: #ededed;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .topbar {
+        background-color: #560216;
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        padding: 0 20px;
+      }
+      .topbar .title {
+        color: white;
+        font-weight: bold;
+        font-size: 55px;
+      }
+      .topbar .image {
+        position: absolute;
+        left: 20px;
+      }
+      .topbar .image img {
+        height: 110px;
+      }
+
+    .container {
+      padding: 50px;
+      text-align: center;
+      
+    }
+
+    .container h2 {
+      text-align: left;
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 40px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      padding: 10px;
+    }
+    .card {
+        background-color: white;
+        padding: 30px 10px;
+        border-radius: 20px;
+        box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center; /* Adicionado para centralizar verticalmente */
+        font-size: 28px;
+        font-weight: bold;
+        height: 150px;
+      }
+      
+    .card:hover {
+        background-color:rgba(211, 47, 47, 0.5);
+    }
+    .card img {
+      width: 55px;
+      height: 55px;
+      margin-bottom: 10px;
+    }
+
+    .back-button {
+      position: absolute;
+      right: 30px;
+      top: 180px;
+      background: white;
+      border-radius: 50%;
+      padding: 10px;
+      border: 2px solid #560216;
+      color: #560216;
+      font-weight: bold;
+      font-size: 20px;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+    <div class="topbar">
+        <div class="image">
+          <img src="{{ url_for('static', filename='icone.png') }}" alt="Ícone">
+        </div>
+        <div class="title">PitMate</div>
+    </div>
+    <a href="{{ url_for('portifólio') }}" class="back-button">←</a>
+
+  <div class="container">
+    <h2>Dicas</h2>
+    <div class="grid">
+        {% for titulo in titulos %}
+        <a href="{{ url_for('detalhe_dicas', titulo=titulo) }}" style="text-decoration: none; color: inherit;">
+          <div class="card">
+            <img src="{{ url_for('static', filename='Dica.png') }}" alt="Ícone">
+            <div>{{ titulo }}</div>
+          </div>
+        </a>
+        {% endfor %}
+      </div>
+      
+
+   
+  </div>
+
+</body>
+</html>

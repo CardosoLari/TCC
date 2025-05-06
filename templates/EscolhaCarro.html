@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ carro.get('Title', 'Modelo Desconhecido') }} - Detalhes</title>
+    <style>
+        body {
+            background-color: #ededed;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .topbar {
+            background-color: #560216;
+            height: 150px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            padding: 0 20px;
+          }
+          .topbar .title {
+            color: white;
+            font-weight: bold;
+            font-size: 55px;
+          }
+          .topbar .image {
+            position: absolute;
+            left: 20px;
+          }
+          .topbar .image img {
+            height: 110px;
+          }
+        .container {
+            margin: 20px auto;
+            max-width: 800px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            transition: max-height 0.5s ease-in-out;
+            max-height: 600px; /* Altura inicial */
+        }
+        .container.expanded {
+            max-height: 1800px; /* Expande para mostrar mais informações */
+        }
+        .car-photo img {
+            width: 100%;
+            max-width: 600px;
+            border-radius: 10px;
+        }
+        .info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 30px;
+           
+            font-weight: bold;
+            color: #333;
+        }
+        .info p {
+            white-space: nowrap;
+        }
+        .icons {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            display: flex;
+            gap: 10px;
+        }
+        .icons img {
+            width: 50px;
+            height: 50px;
+            cursor: pointer;
+        }
+        .extra-info {
+            display: none;
+            margin-top: 20px;
+        }
+        .info-box {
+            display: flex;
+            justify-content: space-between; /* Distribui os itens horizontalmente */
+            align-items: center;
+            gap: 20px;
+        }
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: black;
+            text-decoration: none;
+            padding: 15px;
+            border-radius: 10px;
+            background-size: cover;
+            background-position: center;
+            width: 33%; /* Define a largura dos itens para se ajustarem na linha */
+            text-align: center;
+        }
+        .info-item-novo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 24px;
+            font-weight: bold;
+            color: black;
+            text-decoration: none;
+            padding: 30px;
+            border-radius: 10px;
+            background-size: cover;
+            background-position: center;
+            width: 100%; /* Define a largura dos itens para se ajustarem na linha */
+            text-align: center;
+           
+        }
+        
+        .manual {
+            background-image: url("{{ url_for('static', filename='manual_icon.png') }}");
+        }
+        .tabela-feep {
+            background-image: url("{{ url_for('static', filename='tabela_icon.png') }}");
+        }
+        .suspensao {
+            background-image: url("{{ url_for('static', filename='suspensao_icon.png') }}");
+        }
+        .button-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 30px;
+            padding: 0 10px;
+        }
+        
+        .red-button {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            background-color: #a4262c;
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            padding: 20px;
+            border: none;
+            border-radius: 65px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            height: 180px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .red-button img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 10px;
+        }
+        
+        .red-button:hover {
+            background-color:rgba(211, 47, 47, 0.86);
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="image">
+          <img src="{{ url_for('static', filename='icone.png') }}" alt="Ícone">
+        </div>
+        <div class="title">PitMate</div>
+      </div>
+    <div class="container" id="car-card">
+        <div class="icons">
+            <img src="{{ url_for('static', filename='maisinfo.png') }}" alt="Mais Info" onclick="toggleInfo()">
+            <img src="{{ url_for('static', filename='voltar.png') }}" alt="Voltar" onclick="window.location.href='{{ url_for('portifólio') }}'">
+            
+        </div>
+        <h1>{{ carro.get('Title', 'Modelo Desconhecido') }} - {{ carro.get('Empresa', 'Empresa Desconhecida') }}</h1>
+        <div class="car-photo">
+            <img src="{{ url_for('static', filename=carro.get('Title', 'default') ~ '.png') }}" 
+                 alt="Imagem do carro {{ carro.get('Title', 'Desconhecido') }} da empresa {{ carro.get('Empresa', 'N/A') }}">
+        </div>
+        
+        <!-- Informações principais -->
+        <div class="info">
+            <span class="info-item">⛽ {{ carro['Tanque (L)'] }} L</span>
+            <span class="info-item">🛞 {{ carro['Direção'] }}</span>
+            <span class="info-item">⚡ {{ carro['Motor (cv)'] }} CV</span>
+        </div>
+        
+        <!-- Informações adicionais -->
+        <div class="extra-info" id="extra-info">
+            <div class="info-box">
+                <a href="{{ carro.get('Manual', '#') }}" class="info-item manual" target="_blank">
+                    <img src="{{ url_for('static', filename='Manual.png') }}" width="50px">
+                    Manual do Carro
+                </a>
+                <a href="{{ carro.get('Preço FIPE', '#') }}" class="info-item tabela-feep" target="_blank">
+                    <img src="{{ url_for('static', filename='fipe.png') }}" width="50px">
+                    Tabela FEEP
+                </a>
+                <div class="info-item suspensao">
+                    <img src="{{ url_for('static', filename='Suspensão.png') }}" width="50px">
+                    {{ carro.get('Tipo de Suspensão', 'N/A') }}
+                </div>
+            </div>
+            <div class="info-item-novo ">
+                
+                {{ carro.get('Palavra-Chave', 'N/A') }}
+            </div>
+        </div>     
+        
+        
+    </div>
+    <br><br>
+    <div class="button-grid">
+        <a href="{{ url_for('verificar_login', destino='registrar') }}" class="red-button">
+            <img src="{{ url_for('static', filename='registrar.png') }}">
+            <span>Registrar Manutenção</span>
+        </a>
+        <a href="{{ url_for('verificar_login', destino='historico') }}" class="red-button">
+            <img src="{{ url_for('static', filename='historico.png') }}">
+            <span>Histórico de Manutenções</span>
+        </a>
+        <a href="{{ url_for('verificar_login', destino='proximas') }}" class="red-button">
+            <img src="{{ url_for('static', filename='proximas.png') }}">
+            <span>Próximas Manutenções</span>
+        </a>
+        <a href="{{ url_for('verificar_login', destino='dicas') }}" class="red-button">
+            <img src="{{ url_for('static', filename='dicas.png') }}">
+            <span>Dicas</span>
+        </a>
+        <a href="{{ url_for('verificar_login', destino='checklist') }}" class="red-button">
+            <img src="{{ url_for('static', filename='checklist.png') }}">
+            <span>Checklists</span>
+        </a>
+        <a href="{{ url_for('verificar_login', destino='pesquisar') }}" class="red-button">
+            <img src="{{ url_for('static', filename='pesquisar.png') }}">
+            <span>Pesquisar</span>
+        </a>
+    </div>
+
+    <script>
+        function toggleInfo() {
+            let card = document.getElementById("car-card");
+            let extraInfo = document.getElementById("extra-info");
+
+            if (extraInfo.style.display === "none" || extraInfo.style.display === "") {
+                extraInfo.style.display = "block";
+                card.classList.add("expanded");
+            } else {
+                extraInfo.style.display = "none";
+                card.classList.remove("expanded");
+            }
+        }
+    </script>
+</body>
+</html>

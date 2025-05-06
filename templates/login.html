@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - PitMate</title>
+  <style>
+    body {
+      background-color: #ededed;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+    }
+    h2 {
+      color: #560216;
+      font-size: 40px;
+      margin-top: 100px;
+    }
+    form {
+      max-width: 500px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input {
+      width: 90%;
+      padding: 15px;
+      margin: 15px 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 18px;
+    }
+    button {
+      background-color: #560216;
+      color: white;
+      padding: 15px;
+      font-size: 20px;
+      border: none;
+      border-radius: 10px;
+      width: 100%;
+      cursor: pointer;
+    }
+    a {
+      display: block;
+      margin-top: 20px;
+      color: #560216;
+      font-weight: bold;
+      text-decoration: none;
+    }
+    ul {
+      color: red;
+      list-style: none;
+      padding: 0;
+    }
+    .topbar {
+        background-color: #560216;
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        padding: 0 20px;
+      }
+      .topbar .title {
+        color: white;
+        font-weight: bold;
+        font-size: 55px;
+      }
+      .topbar .image {
+        position: absolute;
+        left: 20px;
+      }
+      .topbar .image img {
+        height: 110px;
+      }
+  </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="image">
+          <img src="{{ url_for('static', filename='icone.png') }}" alt="Ícone">
+        </div>
+        <div class="title">PitMate</div>
+    </div>
+  <h2>Login</h2>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul>
+        {% for msg in messages %}
+          <li>{{ msg }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST">
+    <input name="login" placeholder="Login" required>
+    <input type="password" name="senha" placeholder="Senha" required>
+    <button type="submit">Entrar</button>
+    <a href="{{ url_for('cadastro') }}">Primeiro cadastro</a>
+  </form>
+</body>
+</html>

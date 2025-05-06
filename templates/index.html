@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>PitMate</title>
+  <style>
+    body {
+      background-color: #ededed;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+    .header {
+      text-align: left;
+      margin: 60px;
+    }
+    .header h1 {
+      font-size: 80px;
+      color: #560216;
+      font-weight: bold;
+      margin-left: 20px;
+      margin-top: 100px;
+    }
+    .subtitle {
+      color: #555;
+      margin-bottom: 20px;
+      margin-left: 80px;
+      font-size: 34px;
+      margin-top: -30px;
+      text-align: left;
+    }
+    .main-photo {
+      max-width: 80%;
+      height: auto;
+      margin: 20px 0;
+    }
+    /* Estilos do slider */
+    .slider-container {
+      width: 550px;
+      height: 100px;
+      background-color: #eee;
+      border: 2px solid #aaa;
+      border-radius: 70px;
+      position: relative;
+      margin: 20px auto;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+      margin-top:150px;
+    }
+    .slider-text {
+      font-size: 30px;
+      color: #555;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .slider-handle {
+      position: absolute;
+      left: 0;
+      width: 100px;
+      height: 100px;
+      background-color: #560216; /* cor inicial */
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: left 0.2s, background-color 0.5s;
+      z-index: 2;
+    }
+    /* Ao soltar sem atingir o limite, o handle muda para vermelho */
+    .slider-handle.release {
+      background-color: red;
+    }
+    .slider-handle img {
+      max-width: 60%;
+      max-height: 60%;
+    }
+    /* Posiciona o gif da seta no lado direito do slider */
+    .arrow-gif {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 0;
+    }
+    .arrow-gif img {
+      width: 70px;
+      height: 70px;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>PitMate</h1>
+  </div>
+  <div class="subtitle">
+    Parou, registrou, acelerou!
+  </div>
+  <div>
+    <img class="main-photo" src="{{ url_for('static', filename='pitmate icone.svg') }}" alt="Foto Principal">
+  </div>
+  <!-- Slider: botão deslizante -->
+  <div class="slider-container">
+    <div class="slider-text">Deslize para Começar</div>
+    <div class="arrow-gif">
+      <img src="{{ url_for('static', filename='seta.gif') }}" alt="Seta">
+    </div>
+    <div class="slider-handle">
+      <img src="{{ url_for('static', filename='bandeira.png') }}" alt="Bandeira">
+    </div>
+  </div>
+
+  <script>
+    const slider = document.querySelector('.slider-container');
+    const handle = document.querySelector('.slider-handle');
+    
+    const sliderWidth = slider.offsetWidth;
+    const handleWidth = handle.offsetWidth;
+    // Define um limite para disparar a ação (neste exemplo, 10px antes do fim)
+    const threshold = sliderWidth - handleWidth - 10;
+
+    let dragging = false;
+    let startX;
+
+    // Eventos para mouse
+    handle.addEventListener('mousedown', (e) => {
+      dragging = true;
+      startX = e.clientX - handle.offsetLeft;
+      e.preventDefault();
+    });
+
+    document.addEventListener('mousemove', (e) => {
+      if (!dragging) return;
+      let posX = e.clientX - startX;
+      if (posX < 0) posX = 0;
+      if (posX > sliderWidth - handleWidth) posX = sliderWidth - handleWidth;
+      handle.style.left = posX + 'px';
+    });
+
+    document.addEventListener('mouseup', () => {
+      if (!dragging) return;
+      dragging = false;
+      let posX = handle.offsetLeft;
+      if (posX >= threshold) {
+        // Ação se o slider for arrastado até o fim
+        alert('Começou!');
+        handle.style.left = (sliderWidth - handleWidth) + 'px';
+      } else {
+        // Se não atingir o limite, inicia transição de cor para vermelho e retorna à posição inicial
+        handle.classList.add('release');
+        setTimeout(() => {
+          handle.style.left = '0px';
+          handle.classList.remove('release');
+        }, 500); // 500ms para transição
+      }
+    });
+
+    // Eventos para touch
+    handle.addEventListener('touchstart', (e) => {
+      dragging = true;
+      startX = e.touches[0].clientX - handle.offsetLeft;
+      e.preventDefault();
+    });
+
+    document.addEventListener('touchmove', (e) => {
+      if (!dragging) return;
+      let posX = e.touches[0].clientX - startX;
+      if (posX < 0) posX = 0;
+      if (posX > sliderWidth - handleWidth) posX = sliderWidth - handleWidth;
+      handle.style.left = posX + 'px';
+    });
+
+    document.addEventListener('touchend', () => {
+        if (!dragging) return;
+        dragging = false;
+        let posX = handle.offsetLeft;
+        if (posX >= threshold) {
+          window.location.href = "{{ url_for('portifólio') }}";
+        } else {
+          handle.classList.add('release');
+          setTimeout(() => {
+            handle.style.left = '0px';
+            handle.classList.remove('release');
+          }, 500);
+        }
+      });
+  </script>
+</body>
+</html>

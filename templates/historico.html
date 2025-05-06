@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Histórico de Manutenções</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eeeeee;
+      margin: 0;
+    }
+
+    .topbar {
+        background-color: #560216;
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        padding: 0 20px;
+      }
+  
+      .topbar .title {
+        color: white;
+        font-weight: bold;
+        font-size: 55px;
+      }
+  
+      .topbar .image {
+        position: absolute;
+        left: 20px;
+      }
+  
+      .topbar .image img {
+        height: 110px;
+      }
+  
+      .topbar .profile {
+        position: absolute;
+        right: 20px;
+      }
+  
+      .topbar .profile img {
+        height: 60px;
+        width: 60px;
+        border-radius: 50%;
+      }
+  
+      .back-button {
+        position: absolute;
+        right: 30px;
+        top: 180px;
+        background: white;
+        border-radius: 50%;
+        padding: 10px;
+        border: 2px solid #560216;
+        color: #560216;
+        font-weight: bold;
+        font-size: 20px;
+        text-decoration: none;
+      }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 10px;
+      background-color: white;
+      border-radius: 12px;
+      box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .card {
+      border-bottom: 1px solid #ddd;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .card:last-child {
+      border-bottom: none;
+    }
+
+    .info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .info .tipo {
+      font-weight: bold;
+      color: #560216;
+      margin-bottom: 4px;
+    }
+
+    .info .acao {
+      font-size: 14px;
+      color: #333;
+    }
+
+    .data {
+      background-color: #f4c5c5;
+      color: #560216;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    .download-button {
+      margin: 20px;
+      display: block;
+      width: fit-content;
+      padding: 12px 20px;
+      background-color: #560216;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+    }
+
+    .icon {
+      margin-right: 8px;
+    }
+
+  </style>
+</head>
+<body>
+
+    <div class="topbar">
+        <div class="image">
+          <img src="{{ url_for('static', filename='icone.png') }}" alt="Ícone">
+        </div>
+        <div class="title">PitMate</div>
+        
+      </div>
+    
+      <a href="{{ url_for('portifólio') }}" class="back-button">←</a>
+      
+
+  <div class="container">
+    <h2>Histórico de Manutenção</h2>
+    {% for item in historico %}
+    <div class="card">
+      <div class="info">
+        <div class="tipo">🛠️ {{ item['Tipo de Manutenção'] }}</div>
+        <div class="acao">👨‍🔧 {{ item['Ação'] }}</div>
+      </div>
+      <div class="data">{{ item['Data']|default('--') }}</div>
+    </div>
+    {% else %}
+    <p style="padding: 20px;">Nenhuma manutenção registrada ainda.</p>
+    {% endfor %}
+  </div>
+
+  <a class="download-button" href="{{ url_for('download_historico') }}">📥 Baixar Histórico Completo</a>
+
+</body>
+</html>

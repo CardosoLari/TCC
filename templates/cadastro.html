@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Cadastro - PitMate</title>
+  <style>
+    body {
+      background-color: #ededed;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      margin: 0;
+    }
+    h2 {
+      color: #560216;
+      font-size: 40px;
+      margin-top: 80px;
+    }
+    form {
+      max-width: 600px;
+      margin: 40px auto;
+      background: white;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    input {
+      width: 90%;
+      padding: 15px;
+      margin: 10px 0;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      font-size: 18px;
+    }
+    button {
+      background-color: #560216;
+      color: white;
+      padding: 15px;
+      font-size: 20px;
+      border: none;
+      border-radius: 10px;
+      width: 100%;
+      cursor: pointer;
+      margin-top: 15px;
+    }
+    ul {
+      color: red;
+      list-style: none;
+      padding: 0;
+    }
+    .topbar {
+        background-color: #560216;
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        padding: 0 20px;
+      }
+      .topbar .title {
+        color: white;
+        font-weight: bold;
+        font-size: 55px;
+      }
+      .topbar .image {
+        position: absolute;
+        left: 20px;
+      }
+      .topbar .image img {
+        height: 110px;
+      }
+  </style>
+</head>
+<body>
+    <div class="topbar">
+        <div class="image">
+          <img src="{{ url_for('static', filename='icone.png') }}" alt="Ícone">
+        </div>
+        <div class="title">PitMate</div>
+      </div>
+  <h2>Cadastro</h2>
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul>
+        {% for msg in messages %}
+          <li>{{ msg }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST">
+    <input name="login" placeholder="User" required>
+    <input type="password" name="senha" placeholder="Senha" required>
+    <input type="password" name="confirmar" placeholder="Confirmar Senha" required>
+    <input name="cidade" placeholder="Cidade" required>
+    <input name="estado" placeholder="Estado" required>
+    <input name="regiao" placeholder="Região" required>
+    <input name="telefone" placeholder="Telefone" required>
+    <button type="submit">Cadastrar</button>
+  </form>
+</body>
+</html>

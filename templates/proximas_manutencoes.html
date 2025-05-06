@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <title>Próximas Manutenções</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #eeeeee;
+      margin: 0;
+    }
+
+    .topbar {
+        background-color: #560216;
+        height: 150px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        padding: 0 20px;
+      }
+  
+      .topbar .title {
+        color: white;
+        font-weight: bold;
+        font-size: 55px;
+      }
+  
+      .topbar .image {
+        position: absolute;
+        left: 20px;
+      }
+  
+      .topbar .image img {
+        height: 110px;
+      }
+  
+      .topbar .profile {
+        position: absolute;
+        right: 20px;
+      }
+  
+      .topbar .profile img {
+        height: 60px;
+        width: 60px;
+        border-radius: 50%;
+      }
+  
+      .back-button {
+        position: absolute;
+        right: 30px;
+        top: 180px;
+        background: white;
+        border-radius: 50%;
+        padding: 10px;
+        border: 2px solid #560216;
+        color: #560216;
+        font-weight: bold;
+        font-size: 20px;
+        text-decoration: none;
+      }
+
+    .topbar h1 {
+      margin: 0;
+      font-size: 28px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 30px auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+    }
+
+    .card {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      width: 200px;
+      padding: 20px;
+      text-align: center;
+      position: relative;
+    }
+
+    .card .data {
+      font-size: 18px;
+      font-weight: bold;
+      color: #560216;
+      margin-bottom: 10px;
+    }
+
+    .card .acao {
+      font-size: 14px;
+      color: #333;
+    }
+
+    .pin {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 20px;
+      }
+      
+
+    .back-link {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+
+    <div class="topbar">
+        <div class="image">
+          <img src="{{ url_for('static', filename='icone.png') }}" alt="Ícone">
+        </div>
+        <div class="title">PitMate</div>
+        
+      </div>
+    
+      <a href="{{ url_for('portifólio') }}" class="back-button">←</a>
+      <h1 style="margin: 50px;">Próximas Manutenções</h1>
+
+  <div class="container">
+    {% for item in proximas %}
+      <div class="card">
+        <div class="pin">📌</div>
+        <div  style="margin-top: 35px;" class="data">{{ item['Próxima Manutenção'] }}</div>
+        <div class="acao">{{ item['Ação'] }}</div>
+      </div>
+    {% else %}
+      <p style="width:100%; text-align:center; margin-top: 50px;">Nenhuma manutenção futura encontrada.</p>
+    {% endfor %}
+  </div>
+
+</body>
+</html>
