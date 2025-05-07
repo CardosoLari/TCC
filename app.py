@@ -323,6 +323,9 @@ def calcular_proxima(data_str):
         return proxima.strftime("%d/%m/%Y")
     except:
         return "--"
-
+@app.route('/health')
+def health_check():
+    return 'OK', 200
+    
 if __name__ == '__main__':
     app.run(debug=True)
