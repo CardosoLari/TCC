@@ -259,13 +259,15 @@ def detalhe_dicas(titulo):
 
 @app.route("/checklist")
 def checklist():
+    carro_id = session.get('carro_id') 
     emergencias_count = sum(1 for item in df_Checklist if item["Title"] == "Emergências")
     viagens_count = sum(1 for item in df_Checklist if item["Title"] == "Viagens")
     usados_count = sum(1 for item in df_Checklist if item["Title"] == "Compra de veículos usados")
     return render_template("checklist.html",
                            emergencias_count=emergencias_count,
                            viagens_count=viagens_count,
-                           usados_count=usados_count)
+                           usados_count=usados_count,
+                           carro_id=carro_id)
     
 @app.route("/checklist/<titulo>")
 def checklist_detalhado(titulo):
@@ -282,7 +284,8 @@ def checklist_detalhado(titulo):
 
 @app.route("/pesquisar")
 def pesquisar():
-    return render_template("pesquisar.html", resultados=df_Reclamações)
+    carro_id = session.get('carro_id')
+    return render_template("pesquisar.html", resultados=df_Reclamações,carro_id=carro_id)
 
 @app.route("/manutencao_especifica")
 def manutencao_especifica():
