@@ -139,10 +139,14 @@
       <img src="{{ url_for('static', filename='icone.png') }}" alt="Ícone">
     </div>
     <div class="title">PitMate</div>
-    
+   
   </div>
-  <a href="{{ url_for('portifólio') }}" class="back-button">←</a>
-
+  {% if carro_id is defined and carro_id is not none %}
+      <a href="{{ url_for('detalhes_carro', carro_id=carro_id) }}" class="back-button">←</a>
+  {% else %}
+      <a href="{{ url_for('portifólio') }}" class="back-button">←</a>
+  {% endif %}
+ 
   <div class="container">
     <h2>Manutenção Programada</h2>
     <p>Baseada em ciclos de manutenção de cada carro</p>
@@ -154,18 +158,6 @@
         </div>
         <br><br>
         <div style="flex: 1;">
-          <label for="km">Quilometragem</label>
-          <select id="km" name="km" required>
-            <option value="">Selecione</option>
-            {% for km in intervalos %}
-              <option value="{{ km }}">{{ km }}</option>
-            {% endfor %}
-          </select>
-        </div>
-      </div>
-    
-      <div class="section">
-        <div style="flex: 1;">
           <label for="modelo">Modelo do carro</label>
           <select id="modelo" name="modelo" onchange="filtrarIntervalos()" required>
             <option value="">Selecione</option>
@@ -175,11 +167,24 @@
           </select>
         </div>
       </div>
-    
+   
+      <div class="section">
+        <div style="flex: 1;">
+          <label for="km">Quilometragem</label>
+          <select id="km" name="km" required>
+            <option value="">Selecione</option>
+            {% for km in intervalos %}
+              <option value="{{ km }}">{{ km }}</option>
+            {% endfor %}
+          </select>
+        </div>
+       
+      </div>
+   
       <div class="buttons">
         <button type="button" onclick="filtrarChecklist()">Filtrar</button>
       </div>
-    
+   
       <div class="checklist" id="checklistContainer">
         {% for item in atividades %}
         <div class="checklist-item" data-veiculo="{{ item.Veículo }}" data-km="{{ item.Intervalo }}" style="display: none;">
@@ -189,7 +194,7 @@
         </div>
         {% endfor %}
       </div>
-    
+   
       <div class="next-info" id="proximaManutencao">
         <span id="proximaDataLabel">Próxima Manutenção : --</span>
         <div class="switch">
@@ -197,33 +202,33 @@
           <input type="checkbox" id="notificacao" name="notificar" checked>
         </div>
       </div>    
-    
+   
       <div class="buttons">
         <button type="submit">Registrar</button>
         <button type="button" onclick="window.location.href='/manutencao_especifica'">Manutenção Específica</button>
       </div>
     </form>
-    
+   
   </div>
-
+ 
   <script>
     // Captura os dados do Python (atividades) para uso no JS
     const atividadesData = {{ atividades | tojson }};
-  
+ 
     function filtrarChecklist() {
       const modelo = document.getElementById('modelo').value;
       const km = document.getElementById('km').value;
       const items = document.querySelectorAll('.checklist-item');
-  
+ 
       if (!modelo && !km) {
         alert("Selecione um modelo ou quilometragem para filtrar.");
         return;
       }
-  
+ 
       items.forEach(item => {
         const itemVeiculo = item.getAttribute('data-veiculo');
         const itemKm = item.getAttribute('data-km');
-  
+ 
         if ((modelo && itemVeiculo === modelo && !km) ||
             (km && itemKm === km && !modelo) ||
             (modelo && km && itemVeiculo === modelo && itemKm === km)) {
@@ -233,23 +238,23 @@
         }
       });
     }
-  
+ 
     function filtrarIntervalos() {
       const modeloSelecionado = document.getElementById("modelo").value;
       const kmSelect = document.getElementById("km");
-  
+ 
       // Limpar opções atuais
       kmSelect.innerHTML = '<option value="">Selecione</option>';
-  
+ 
       if (modeloSelecionado === "") return;
-  
+ 
       // Filtrar os intervalos possíveis para o modelo
       const intervalosFiltrados = [...new Set(
         atividadesData
           .filter(item => item.Veículo === modeloSelecionado)
           .map(item => item.Intervalo)
       )];
-  
+ 
       // Adicionar opções filtradas no select de km
       intervalosFiltrados.forEach(km => {
         const opt = document.createElement("option");
@@ -258,19 +263,19 @@
         kmSelect.appendChild(opt);
       });
     }
-  
+ 
     document.getElementById('data').addEventListener('change', function () {
       const dataSelecionada = new Date(this.value);
       if (!isNaN(dataSelecionada)) {
         const proximaData = new Date(dataSelecionada);
         proximaData.setFullYear(dataSelecionada.getFullYear() + 1);
-  
+ 
         const dia = String(proximaData.getDate()).padStart(2, '0');
         const mes = String(proximaData.getMonth() + 1).padStart(2, '0'); // mês começa em 0
         const ano = proximaData.getFullYear();
-  
+ 
         const dataFormatada = `${dia}/${mes}/${ano}`;
-  
+ 
         // Atualizar apenas o texto de próxima manutenção
         const proximaManutencaoLabel = document.getElementById('proximaDataLabel');
         if (proximaManutencaoLabel) {
@@ -279,8 +284,9 @@
       }
     });
   </script>
-  
-  
-  
+ 
+ 
+ 
 </body>
 </html>
+ 

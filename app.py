@@ -9,7 +9,7 @@ app.secret_key = "segredo_super_secreto"
 
 # DataFrame de usuários em memória
 df_usuarios = pd.DataFrame(columns=[
-    "login", "senha", "cidade", "estado", "regiao", "telefone"
+    "login", "senha", "cidade", "estado", "regiao", "telefone", "carros"
 ])
 
 # Carregar histórico de manutenções (se existir) ou criar vazio
@@ -65,6 +65,8 @@ def get_carros():
 def detalhes_carro(carro_id):
     carro = next((c for c in carros if c['Id'] == carro_id), None)
     if carro:
+        session['carro_selecionado'] = carro['Title']
+        session['carro_id'] = carro_id  # Armazenando o ID na sessão
         return render_template('EscolhaCarro.html', carro=carro)
     return "Carro não encontrado", 404
 
@@ -82,10 +84,12 @@ def login():
         login_user = request.form["login"]
         senha = request.form["senha"]
         usuario = df_usuarios[df_usuarios["login"] == login_user]
+        print(df_usuarios)
 
         if not usuario.empty and check_password_hash(usuario.iloc[0]["senha"], senha):
             session["usuario"] = login_user
-            return redirect(url_for("home"))
+            
+            return redirect(url_for("portifólio"))
         else:
             flash("Login ou senha inválidos.")
     return render_template("login.html")
@@ -102,40 +106,74 @@ def cadastro():
         regiao = request.form["regiao"]
         telefone = request.form["telefone"]
 
+        # Verificar se as senhas coincidem
         if senha != confirmar:
             flash("Senhas não coincidem!")
             return redirect(url_for("cadastro"))
 
+        # Verificar se o login já existe
         if login in df_usuarios["login"].values:
             flash("Login já existente.")
             return redirect(url_for("cadastro"))
 
+        # Hash da senha
         senha_hash = generate_password_hash(senha)
+
+        # Obter os carros selecionados
+        carros_usuario = request.form.getlist("carros[]")
+
+        # Adicionar novo usuário ao DataFrame
         novo_usuario = {
             "login": login,
             "senha": senha_hash,
             "cidade": cidade,
             "estado": estado,
             "regiao": regiao,
-            "telefone": telefone
+            "telefone": telefone,
+            "carros": ", ".join(carros_usuario)  # Guardar como string separada por vírgulas
         }
 
         df_usuarios = pd.concat([df_usuarios, pd.DataFrame([novo_usuario])], ignore_index=True)
 
+        # Salvar os dados em um arquivo (opcional: use CSV ou DB em produção)
+        df_usuarios.to_excel("usuarios.xlsx", index=False)
+
         flash("Cadastro realizado com sucesso. Faça login!")
         return redirect(url_for("login"))
 
-    return render_template("cadastro.html")
+    return render_template("cadastro.html", carros=carros)
 
 @app.route("/manutencao")
 def registrar():
-    atividades = manutenção_cronograma
-    veiculos = sorted(set(item["Veículo"] for item in atividades))
-    intervalos = sorted(set(item["Intervalo"] for item in atividades))
+    if 'carro_selecionado' not in session:
+        flash("Por favor, selecione um carro primeiro.")
+        return redirect(url_for('portifólio'))
+
+    carro_selecionado = session['carro_selecionado']
+    carro_id = session.get('carro_id')  # Certifique-se de que isso está definido
+    
+    if carro_id is None:  # Verificação adicional
+        flash("ID do carro não encontrado.")
+        return redirect(url_for('portifólio'))
+
+    atividades_filtradas = [
+        item for item in manutenção_cronograma 
+        if item["Veículo"].lower() == carro_selecionado.lower()
+    ]
+    
+    if not atividades_filtradas:
+        flash("Não há manutenções programadas para este veículo.")
+        atividades_filtradas = []
+
+    veiculos = [carro_selecionado]
+    intervalos = sorted(set(item["Intervalo"] for item in atividades_filtradas))
+
     return render_template("manutencao_programada.html",
-                           veiculos=veiculos,
-                           intervalos=intervalos,
-                           atividades=atividades)
+                         veiculos=veiculos,
+                         intervalos=intervalos,
+                         atividades=atividades_filtradas,
+                         carro_selecionado=carro_selecionado,
+                         carro_id=carro_id)  # Passando o carro_id para o template
 
 from flask import send_file
 
@@ -145,12 +183,27 @@ def historico():
         flash("Você precisa estar logado.")
         return redirect(url_for("login"))
 
+    if "carro_selecionado" not in session:
+        flash("Por favor, selecione um carro primeiro.")
+        return redirect(url_for("portifólio"))
+
     usuario = session["usuario"]
-    historico_usuario = df_manutenções[df_manutenções["Usuário"] == usuario]
+    carro_selecionado = session["carro_selecionado"]
+    carro_id = session.get('carro_id')  # Adicionar esta linha
+
+    # Filtrar por usuário E carro selecionado
+    historico_usuario = df_manutenções[
+        (df_manutenções["Usuário"] == usuario) & 
+        (df_manutenções["Carro"] == carro_selecionado)
+    ]
+    
     historico_usuario = historico_usuario.sort_values(by="Data", ascending=False)
 
-    return render_template("historico.html", historico=historico_usuario.to_dict(orient="records"))
-
+    return render_template("historico.html", 
+                         historico=historico_usuario.to_dict(orient="records"),
+                         carro_selecionado=carro_selecionado,
+                         carro_id=carro_id)  # Adicionar esta linha
+    
 @app.route("/download_historico")
 def download_historico():
     return send_file("historico_manutencao.xlsx", as_attachment=True)
@@ -161,23 +214,27 @@ def proximas():
         flash("Você precisa estar logado.")
         return redirect(url_for("login"))
 
+    if "carro_selecionado" not in session:
+        flash("Por favor, selecione um carro primeiro.")
+        return redirect(url_for("portifólio"))
+
     usuario = session["usuario"]
-    print(f"Print usuário {usuario}")
-    hoje = datetime.today()
+    carro_selecionado = session["carro_selecionado"]
+    carro_id = session.get('carro_id')  
 
     df_futuras = df_manutenções[
         (df_manutenções["Usuário"] == usuario) &
-        (df_manutenções["Notificar"] == "Sim") 
+        (df_manutenções["Notificar"] == "Sim") & 
+        (df_manutenções["Carro"] == carro_selecionado)
     ].copy()
     print(f"Print df_futuras {df_futuras}")
-    # Converte a coluna para datetime e formata como string no padrão brasileiro
-    df_futuras["Próxima Manutenção"] = pd.to_datetime(
-        df_futuras["Próxima Manutenção"], errors="coerce"
-    ).dt.strftime("%d/%m/%Y")
+
 
     df_futuras = df_futuras.sort_values(by="Próxima Manutenção")
     
-    return render_template("proximas_manutencoes.html", proximas=df_futuras.to_dict(orient="records"))
+    return render_template("proximas_manutencoes.html", proximas=df_futuras.to_dict(orient="records"),
+                         carro_selecionado=carro_selecionado,
+                         carro_id=carro_id)
 
 @app.route("/dicas")
 def dicas():
@@ -218,8 +275,13 @@ def pesquisar():
 
 @app.route("/manutencao_especifica")
 def manutencao_especifica():
+    if 'carro_selecionado' not in session:
+        flash("Por favor, selecione um carro primeiro.")
+        return redirect(url_for('portifólio'))
+
+    carro_selecionado = session['carro_selecionado']
     atividades = manutenção_cronograma
-    carros = sorted(set(item["Veículo"] for item in atividades))
+    carros = [carro_selecionado] 
     tipos = ["Preventiva", "Corretiva"]
     pecas = ["Pastilhas de freio", "Filtro de ar", "Óleo do motor"]
 
@@ -323,9 +385,6 @@ def calcular_proxima(data_str):
         return proxima.strftime("%d/%m/%Y")
     except:
         return "--"
-@app.route('/health')
-def health_check():
-    return 'OK', 200
-    
+
 if __name__ == '__main__':
     app.run(debug=True)

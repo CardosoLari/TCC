@@ -139,11 +139,15 @@
         
       </div>
     
+      {% if carro_id is defined and carro_id is not none %}
+      <a href="{{ url_for('detalhes_carro', carro_id=carro_id) }}" class="back-button">←</a>
+  {% else %}
       <a href="{{ url_for('portifólio') }}" class="back-button">←</a>
+  {% endif %}
       
 
   <div class="container">
-    <h2>Histórico de Manutenção</h2>
+    <h2>Histórico de Manutenção - {{ carro_selecionado }}</h2>
     {% for item in historico %}
     <div class="card">
       <div class="info">

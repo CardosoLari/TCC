@@ -122,8 +122,12 @@
         
       </div>
     
+      {% if carro_id is defined and carro_id is not none %}
+      <a href="{{ url_for('detalhes_carro', carro_id=carro_id) }}" class="back-button">←</a>
+  {% else %}
       <a href="{{ url_for('portifólio') }}" class="back-button">←</a>
-      <h1 style="margin: 50px;">Próximas Manutenções</h1>
+  {% endif %}
+      <h1 style="margin: 50px;">Próximas Manutenções - {{ carro_selecionado }}</h1>
 
   <div class="container">
     {% for item in proximas %}

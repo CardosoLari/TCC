@@ -68,6 +68,29 @@
       .topbar .image img {
         height: 110px;
       }
+
+    /* Estilo para o grupo de checkboxes */
+    fieldset {
+      text-align: left; /* Garantir que os rótulos fiquem à esquerda */
+      padding: 20px;
+      margin-top: 20px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+    }
+    legend {
+      font-weight: bold;
+      font-size: 18px;
+    }
+    label {
+      font-size: 16px;
+      margin: 0 10px 0 0; /* Ajuste para o espaçamento entre o checkbox e o texto */
+      display: inline-block; /* Manter na mesma linha */
+      vertical-align: middle; /* Alinhar verticalmente */
+    }
+    input[type="checkbox"] {
+      margin: 0; /* Remover a margem do checkbox */
+      vertical-align: middle; /* Alinhar verticalmente o checkbox */
+    }
   </style>
 </head>
 <body>
@@ -90,13 +113,24 @@
   {% endwith %}
 
   <form method="POST">
-    <input name="login" placeholder="User" required>
+    <input name="login" placeholder="Usuário" required>
     <input type="password" name="senha" placeholder="Senha" required>
     <input type="password" name="confirmar" placeholder="Confirmar Senha" required>
     <input name="cidade" placeholder="Cidade" required>
     <input name="estado" placeholder="Estado" required>
     <input name="regiao" placeholder="Região" required>
     <input name="telefone" placeholder="Telefone" required>
+    
+    <fieldset>
+      <legend>Selecione os carros que você possui:</legend>
+      {% for carro in carros %}
+        <label>
+          <input type="checkbox" name="carros[]" value="{{ carro['Modelo'] }}">
+          {{ carro['Title'] }}
+        </label>
+      {% endfor %}
+    </fieldset>
+    
     <button type="submit">Cadastrar</button>
   </form>
 </body>
