@@ -98,7 +98,11 @@
         </div>
         <div class="title">PitMate</div>
     </div>
-    <a href="{{ url_for('portifólio') }}" class="back-button">←</a>
+    {% if carro_id is defined and carro_id is not none %}
+      <a href="{{ url_for('detalhes_carro', carro_id=carro_id) }}" class="back-button">←</a>
+  {% else %}
+      <a href="{{ url_for('portifólio') }}" class="back-button">←</a>
+  {% endif %}
 
   <div class="container">
     <h2>Dicas</h2>
