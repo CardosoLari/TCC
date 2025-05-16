@@ -250,7 +250,7 @@ def proximas():
 def dicas():
     carro_id = session.get('carro_id') 
     titulos_dicas = list(set(d['Title'] for d in df_Dicas))
-    return render_template("Dicas.html", titulos=titulos_dicas,carro_id=carro_id)
+    return render_template("dicas.html", titulos=titulos_dicas,carro_id=carro_id)
 
 @app.route("/dicas/<titulo>")
 def detalhe_dicas(titulo):
