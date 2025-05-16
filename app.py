@@ -53,6 +53,16 @@ manutenção_cronograma = df_cronograma.to_dict(orient="records")
 def home():
     return render_template('index.html')
 
+@app.route("/health")
+def health_check():
+    """Rota para health check do Azure"""
+    return "OK", 200
+
+@app.route("/robots933456.txt")
+def robots_txt():
+    """Rota para verificação do Azure"""
+    return "OK", 200
+
 @app.route('/portifólio')
 def portifólio():
     return render_template('portifólio.html', carros=carros)
